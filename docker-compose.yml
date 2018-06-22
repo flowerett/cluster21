@@ -8,9 +8,11 @@ services:
     ports:
       - 4000
     environment:
+      CLUSTER_ROLE: master
       ERLANG_COOKIE: secret
       NODE_BASENAME: service
-      CONNECT_TO_NODENAME: cluster_test_node2_1
+      CONNECT_TO_NODE1: cluster21_node2_1
+      CONNECT_TO_NODE2: cluster21_node3_1
 
   node2:
     build: .
@@ -19,6 +21,17 @@ services:
     ports:
       - 4000
     environment:
+      CLUSTER_ROLE: slave
       ERLANG_COOKIE: secret
       NODE_BASENAME: service
-      CONNECT_TO_NODENAME: cluster_test_node1_1
+
+  node3:
+    build: .
+    entrypoint: ./docker-entrypoint.sh
+    command: init
+    ports:
+      - 4000
+    environment:
+      CLUSTER_ROLE: slave
+      ERLANG_COOKIE: secret
+      NODE_BASENAME: service
