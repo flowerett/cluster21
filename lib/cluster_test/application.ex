@@ -24,37 +24,13 @@ defmodule ClusterTest.Application do
     [Supervisor.child_spec({ClusterTestWeb.Endpoint, []}, type: :supervisor)]
   end
 
+  # for different topologies no need in child_spec
+  # {Cluster.Supervisor, [Application.get_env(:libcluster, :topology)]}
   defp get_children("master") do
-    topologies = [
-      [
-        dns_poll: [
-          strategy: Cluster.Strategy.DNSPoll,
-          config: [
-            polling_interval: 5_000,
-            query: System.get_env("CONNECT_TO_NODE1"),
-            node_basename: "service",
-            debug: true
-          ]
-        ]
-      ],
-      [
-        dns_poll: [
-          strategy: Cluster.Strategy.DNSPoll,
-          config: [
-            polling_interval: 5_000,
-            query: System.get_env("CONNECT_TO_NODE2"),
-            node_basename: "service",
-            debug: true
-          ]
-        ]
-      ]
+    [
+      Supervisor.child_spec({Cluster.Supervisor, [Application.get_env(:libcluster, :cluster1)]}, id: :cluster1),
+      Supervisor.child_spec({Cluster.Supervisor, [Application.get_env(:libcluster, :cluster2)]}, id: :cluster2),
+      Supervisor.child_spec({ClusterTestWeb.Endpoint, []}, type: :supervisor)
     ]
-
-    topologies
-    |> Stream.with_index(1)
-    |> Enum.map(fn {topology, ind} ->
-      Supervisor.child_spec({Cluster.Supervisor, [topology]}, id: {Cluster.Supervisor, ind})
-    end)
-    |> :erlang.++(get_children("slave"))
   end
 end

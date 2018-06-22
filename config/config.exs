@@ -21,3 +21,27 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+config :libcluster,
+  cluster1: [
+    dns_poll_cluster1: [
+      strategy: Cluster.Strategy.DNSPoll,
+      config: [
+        polling_interval: 5_000,
+        query: System.get_env("CONNECT_TO_NODE1"),
+        node_basename: "service",
+        debug: true
+      ]
+    ]
+  ],
+  cluster2: [
+    dns_poll_cluster1: [
+      strategy: Cluster.Strategy.DNSPoll,
+      config: [
+        polling_interval: 5_000,
+        query: System.get_env("CONNECT_TO_NODE2"),
+        node_basename: "service",
+        debug: true
+      ]
+    ]
+  ]
