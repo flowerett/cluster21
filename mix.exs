@@ -36,7 +36,7 @@ defmodule ClusterTest.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
-      {:libcluster, git: "https://github.com/bitwalker/libcluster.git"},
+      {:libcluster, "~> 3.0.2"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"}
     ]
